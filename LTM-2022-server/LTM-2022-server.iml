@@ -30,12 +30,13 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../lib/ea-async-1.2.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/opencv/build/java/opencv-460.jar!/" />
         </CLASSES>
-        <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../lib/ea-async-1.2.3-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES />
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../lib/opencv/build/java/opencv-460.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/opencv/build/java/opencv-460.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
   </component>

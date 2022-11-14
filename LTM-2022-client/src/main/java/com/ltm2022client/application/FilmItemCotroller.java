@@ -1,17 +1,33 @@
 package com.ltm2022client.application;
 
 import com.ltm2022client.models.Film;
+import com.ltm2022client.models.Review;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class FilmItemCotroller implements Initializable {
@@ -43,17 +59,23 @@ public class FilmItemCotroller implements Initializable {
     @FXML
     private Label yearLbl;
 
+    @FXML
+    private GridPane gridPane;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        Handler();
     }
 
-    public void setValue(Film film) {
+    public void setValue(Film film, ObservableList<Review> reviews) throws IOException {
         yearLbl.setText(film.getYear());
 //        trailerBtn.;
         if(film.getTrailer().equals("None"))
             trailerBtn.setDisable(true);
-        Image img = new Image(film.getPoster());
+
+        Image img = new Image(String.valueOf(new File("D:/HK1-nam4/lap_trinh_mang/project/LTM-2022-client/src/main/resources/com/ltm2022client/application/Icons/film_icon.png")));
+        if(!film.getPoster().equals("None"))
+            img = new Image(film.getPoster());
         posterImg.setImage(img);
         nameLbl.setText(film.getName());
         imdbLbl.setText(film.getImdb());
@@ -61,5 +83,34 @@ public class FilmItemCotroller implements Initializable {
         desTxf.setText(film.getDescription());
         directorLbl.setText(film.getDirector());
         actorLbl.setText(film.getActor());
+        for(int i=0; i<reviews.size(); i++){
+            FXMLLoader reviewLoader = new FXMLLoader();
+            reviewLoader.setLocation(getClass().getResource("review-film.fxml"));
+            AnchorPane reviewBox = reviewLoader.load();
+            ReviewFilmController reviewFilmController = reviewLoader.getController();
+            reviewFilmController.setValue(reviews.get(i));
+            gridPane.add(reviewBox, 1, i+1);
+            GridPane.setMargin(reviewBox, new Insets(10));
+        }
+    }
+
+    public void Handler(){
+        trailerBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    Stage newStage = new Stage();
+                    PlayTrailerMain playTrailerMain = new PlayTrailerMain();
+
+                    Stage oldStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    newStage.initModality(Modality.WINDOW_MODAL);
+                    newStage.initOwner(oldStage);
+
+                    playTrailerMain.start(newStage);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

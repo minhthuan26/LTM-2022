@@ -2,12 +2,20 @@
     -fx-text-fill: white;
     -fx-font-family: Cambria;
 }
-#wrapPane,
-#filmPane{
+#wrapPane{
     -fx-background-color: rgba(40, 40, 40, 0.9);
     -fx-border-width: 2px;
     -fx-border-style: solid;
     -fx-border-color: white;
+}
+
+#filmPane{
+    -fx-background-color: rgba(40, 40, 40, 0.9);
+    -fx-border-width: 2px;
+    -fx-border-style: solid;
+    -fx-border-color: rgba(40, 40, 40, 0.9);
+    /*-fx-background-radius: 25px;*/
+    /*-fx-border-radius: 25px;*/
 }
 
 #contentPane{
@@ -70,7 +78,7 @@
     -fx-background-color: transparent;
 }
 
-#filmPane *{
+#centerPane *{
     -fx-font-size: 16px;
 }
 
@@ -79,6 +87,33 @@
 }
 
 #desTxf,
-#desTxf .scroll-pane .content{
+#desTxf .scroll-pane .content,
+#reviewContentTxf,
+#reviewContentTxf, .scroll-pane .content{
     -fx-background-color: transparent;
+    -fx-padding: 3px 0;
+}
+
+.image{
+    -fx-background-radius: 25px;
+}
+
+#reviewLbl{
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-border-color: black;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 0 0 0 5px;
+}
+
+#reviewPane *{
+    -fx-font-size: 16px;
+}
+
+#reviewTitleLbl{
+    -fx-font-weight: bold;
+}
+
+#formatGroup{
+    -fx-font-size: 16px;
 }

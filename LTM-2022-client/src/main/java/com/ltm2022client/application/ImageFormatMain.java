@@ -2,7 +2,6 @@ package com.ltm2022client.application;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -10,7 +9,7 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 import java.util.Objects;
 
-public class Main extends Application {
+public class ImageFormatMain extends Application {
 
     public static Scene scene;
 
@@ -20,12 +19,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        setRoot("main");
+        setRoot("image-format");
         setStylesheets("main");
-        primaryStage.setTitle("PhornHub");
         primaryStage.setScene(scene);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
-        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 

@@ -6,8 +6,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -53,6 +51,7 @@ public class MainController implements Initializable {
     public static BufferedReader in = null;
     public static BufferedWriter out = null;
     private static BufferedReader stdIn = null;
+    public static String key = null;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -70,6 +69,8 @@ public class MainController implements Initializable {
                     in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                     stdIn = new BufferedReader(new InputStreamReader(System.in));
+                    key = in.readLine();
+                    System.out.println(key);
                 } catch (Exception error) {
                     closeConnect();
                 }
@@ -142,6 +143,23 @@ public class MainController implements Initializable {
                 try {
                     contentPane.getChildren().clear();
                     contentPane.getChildren().add(FXMLLoader.load(Objects.requireNonNull(getClass().getResource("search-film.fxml"))));
+                    AnchorPane content = (AnchorPane) contentPane.getChildren().get(0);
+                    AnchorPane.setBottomAnchor(content, 0.0);
+                    AnchorPane.setTopAnchor(content, 0.0);
+                    AnchorPane.setLeftAnchor(content, 0.0);
+                    AnchorPane.setRightAnchor(content, 0.0);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        imageHandleBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    contentPane.getChildren().clear();
+                    contentPane.getChildren().add(FXMLLoader.load(Objects.requireNonNull(getClass().getResource("image-processing.fxml"))));
                     AnchorPane content = (AnchorPane) contentPane.getChildren().get(0);
                     AnchorPane.setBottomAnchor(content, 0.0);
                     AnchorPane.setTopAnchor(content, 0.0);

@@ -1,10 +1,13 @@
 module com.example.ltm2022client {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.web;
 
     requires org.controlsfx.controls;
-    requires json.simple;
     requires org.json;
+    requires java.desktop;
+    requires opencv;
+    requires org.jsoup;
 
     opens com.ltm2022client to javafx.fxml;
     exports com.ltm2022client;
