@@ -72,8 +72,8 @@ public class FilmItemCotroller implements Initializable {
 //        trailerBtn.;
         if(film.getTrailer().equals("None"))
             trailerBtn.setDisable(true);
-
-        Image img = new Image(String.valueOf(new File("com/ltm2022client/application/Icons/film_icon.png")));
+        String path = System.getProperty("user.dir");
+        Image img = new Image(String.valueOf(new File(path + "/src/main/resources/com/ltm2022client/application/Icons/film_icon.png")));
         if(!film.getPoster().equals("None"))
             img = new Image(film.getPoster());
         posterImg.setImage(img);

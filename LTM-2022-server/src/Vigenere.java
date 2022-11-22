@@ -49,13 +49,14 @@ public class Vigenere {
     }
 
     public static void main(String[] args) {
-        String str = "https://m.media-amazon.com/images/M/MV5BMzg2Mjg1OTk0NF5BMl5BanBnXkFtZTcwMjQ4MTA3Mw@@._V1_QL75_UX380_CR0,0,380,562_.jpg";
-        String key = "zfyrxmxeru";
-
-        String des =  Decode(str, key);
-        System.out.println("cipher: " + des);
-
-        System.out.println("origin: " + Encode(des, key));
+//        String str = "https://m.media-amazon.com/images/M/MV5BMzg2Mjg1OTk0NF5BMl5BanBnXkFtZTcwMjQ4MTA3Mw@@._V1_QL75_UX380_CR0,0,380,562_.jpg";
+//        String key = "zfyrxmxeru";
+//
+//        String des =  Decode(str, key);
+//        System.out.println("cipher: " + des);
+//
+//        System.out.println("origin: " + Encode(des, key));
+        System.out.println(System.getProperty("user.dir"));
     }
 }
 

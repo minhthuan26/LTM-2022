@@ -168,7 +168,8 @@ public class ImageProcessingController implements Initializable {
             public void handle(ActionEvent event) {
                 System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
                 CascadeClassifier faceDetector = new CascadeClassifier();
-                faceDetector.load("src/main/java/com/ltm2022client/application/haarcascade_frontalface_alt.xml");
+                String path = System.getProperty("user.dir");
+                faceDetector.load(path + "/src/main/java/com/ltm2022client/application/haarcascade_frontalface_alt.xml");
                 Mat image = Imgcodecs.imread(String.valueOf(inputImageFile));
                 MatOfRect faceDetections = new MatOfRect();
                 faceDetector.detectMultiScale(image, faceDetections);
