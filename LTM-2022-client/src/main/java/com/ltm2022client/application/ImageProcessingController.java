@@ -12,28 +12,20 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.control.Label;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.ResourceBundle;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfRect;
+
+import org.opencv.core.*;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
@@ -239,6 +231,99 @@ public class ImageProcessingController implements Initializable {
                 }
             }
         });
+
+//        findWithGoogleBtn.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                // Initially assigning null
+//                BufferedImage imgA = null;
+//                BufferedImage imgB = null;
+//
+//                // Try block to check for exception
+//                try {
+//
+//                    // Reading file from local directory by
+//                    // creating object of File class
+//                    File fileA = new File("D:\\Pictures\\SS\\2.jpg");
+//                    File fileB = new File("D:\\Pictures\\SS\\2_greyscale.jpg");
+//
+//                    // Reading files
+//                    imgA = ImageIO.read(fileA);
+//                    imgB = ImageIO.read(fileB);
+//                }
+//
+//                // Catch block to check for exceptions
+//                catch (IOException e) {
+//                    // Display the exceptions on console
+//                    System.out.println(e);
+//                }
+//
+//                // Assigning dimensions to image
+//                int width1 = imgA.getWidth();
+//                int width2 = imgB.getWidth();
+//                int height1 = imgA.getHeight();
+//                int height2 = imgB.getHeight();
+//
+//                // Checking whether the images are of same size or
+//                // not
+//                if ((width1 != width2) || (height1 != height2))
+//
+//                    // Display message straightaway
+//                    System.out.println("Error: Images dimensions"
+//                            + " mismatch");
+//                else {
+//
+//                    // By now, images are of same size
+//
+//                    long difference = 0;
+//
+//                    // treating images likely 2D matrix
+//
+//                    // Outer loop for rows(height)
+//                    for (int y = 0; y < height1; y++) {
+//
+//                        // Inner loop for columns(width)
+//                        for (int x = 0; x < width1; x++) {
+//
+//                            int rgbA = imgA.getRGB(x, y);
+//                            int rgbB = imgB.getRGB(x, y);
+//                            int redA = (rgbA >> 16) & 0xff;
+//                            int greenA = (rgbA >> 8) & 0xff;
+//                            int blueA = (rgbA) & 0xff;
+//                            int redB = (rgbB >> 16) & 0xff;
+//                            int greenB = (rgbB >> 8) & 0xff;
+//                            int blueB = (rgbB) & 0xff;
+//
+//                            difference += Math.abs(redA - redB);
+//                            difference += Math.abs(greenA - greenB);
+//                            difference += Math.abs(blueA - blueB);
+//                        }
+//                    }
+//
+//                    // Total number of red pixels = width * height
+//                    // Total number of blue pixels = width * height
+//                    // Total number of green pixels = width * height
+//                    // So total number of pixels = width * height *
+//                    // 3
+//                    double total_pixels = width1 * height1 * 3;
+//
+//                    // Normalizing the value of different pixels
+//                    // for accuracy
+//
+//                    // Note: Average pixels per color component
+//                    double avg_different_pixels
+//                            = difference / total_pixels;
+//
+//                    // There are 255 values of pixels in total
+//                    double percentage
+//                            = (avg_different_pixels / 255) * 100;
+//
+//                    // Lastly print the difference percentage
+//                    System.out.println("Difference Percentage-->"
+//                            + percentage);
+//                }
+//            }
+//        });
     }
 
     public String getFileName(File file) {

@@ -176,13 +176,17 @@ public class ClientHandler implements Runnable {
                 Elements yearUlTag = getElement.getElementsByAttributeValue("data-testid", "hero-title-block__metadata");
                 String filmYear = yearUlTag.get(0).getElementsByTag("a").get(0).text();
                 String actors = "";
-                Element actorsUlTag = getElement.getElementsByAttributeValue("class", "ipc-inline-list ipc-inline-list--show-dividers ipc-inline-list--inline ipc-metadata-list-item__list-content baseAlt").get(2);
-                Elements actorsName = actorsUlTag.getElementsByTag("a");
-                String[] actorsNameArray = new String[actorsName.size()];
-                for(int i=0; i<actorsName.size(); i++){
-                    actorsNameArray[i] = actorsName.get(i).text();
+                Elements actorsUlTags = getElement.getElementsByAttributeValue("class", "ipc-inline-list ipc-inline-list--show-dividers ipc-inline-list--inline ipc-metadata-list-item__list-content baseAlt");
+                if(actorsUlTags.size() > 2){
+                    Element actorsUlTag = actorsUlTags.get(2);
+                    Elements actorsName = actorsUlTag.getElementsByTag("a");
+                    String[] actorsNameArray = new String[actorsName.size()];
+                    for(int i=0; i<actorsName.size(); i++){
+                        actorsNameArray[i] = actorsName.get(i).text();
+                    }
+                    actors = String.join(", ", actorsNameArray);
                 }
-                actors = String.join(", ", actorsNameArray);
+
 
                 json.put("filmName", filmName);
                 json.put("filmYear", filmYear);
