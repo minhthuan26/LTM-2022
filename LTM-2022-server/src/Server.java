@@ -1,7 +1,3 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -9,7 +5,8 @@ public class Server {
 
     private static ServerSocket server = null;
     private static Socket socket = null;
-    public static Thread thread = null;
+    public static Thread searchFilmThread = null;
+    public static Thread imageProcessingThread = null;
 
     public void start() {
         try {
@@ -18,9 +15,12 @@ public class Server {
             while (!server.isClosed()) {
                 socket = server.accept();
                 System.out.println("Client " + socket.getInetAddress() + " connected...");
-                ClientHandler client = new ClientHandler(socket);
-                thread = new Thread(client);
-                thread.start();
+                SearchFilmHandler searchFilmClient = new SearchFilmHandler(socket);
+                searchFilmThread = new Thread(searchFilmClient);
+                searchFilmThread.start();
+//                SearchFilmHandler imageProcessingClient = new SearchFilmHandler(socket);
+//                imageProcessingThread = new Thread(searchFilmClient);
+//                imageProcessingThread.start();
             }
         } catch (Exception error) {
             closeConnect();

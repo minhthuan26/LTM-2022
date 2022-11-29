@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import javax.crypto.SealedObject;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -21,7 +22,9 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import static com.ltm2022client.application.ImageProcessingController.inputImageFile;
 import static com.ltm2022client.application.ImageProcessingController.outputImageFile;
+import static com.ltm2022client.application.MainController.objectIn;
 
 public class ImageFormatController implements Initializable {
 
@@ -58,6 +61,46 @@ public class ImageFormatController implements Initializable {
         Handler();
     }
 
+    public File sendImage(File image, String option, String fileExt){
+        try{
+            String key = Cryption.RandomKey() + ";;2" + ";;" + option + ";;" + fileExt;
+            SealedObject imageObject = (SealedObject) Cryption.AES.EncryptionObject(image, key);
+            key = Cryption.RSA.Encryption(key, MainController.serverPublicKey);
+            MainController.objectOut.writeObject(imageObject);
+            MainController.objectOut.writeObject(key);
+            MainController.objectOut.flush();
+
+            Object responseFromServer;
+            SealedObject message = null;
+            while((responseFromServer = (Object) objectIn.readObject()) != null){
+
+                if(responseFromServer.getClass().getName().equalsIgnoreCase("javax.crypto.SealedObject")){
+                    message = (SealedObject) responseFromServer;
+                }
+                else{
+                    String checkValue = (String) responseFromServer;
+                    if(!checkValue.equalsIgnoreCase("done"))
+                        key = (String) responseFromServer;
+                    else{
+                        break;
+                    }
+                }
+            }
+            if(message != null && key != null){
+                key = Cryption.RSA.Decryption(key, MainController.privateKey);
+                String[] keyPart = key.split(";;");
+                if(keyPart[1].equalsIgnoreCase("2")){
+                    image = (File) Cryption.AES.DecryptionObject(message, key);
+                    return image;
+                }
+            }
+        }
+        catch(Exception error){
+            error.printStackTrace();
+        }
+        return null;
+    }
+
     public void Handler() {
         cancelBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -72,11 +115,13 @@ public class ImageFormatController implements Initializable {
             public void handle(ActionEvent event) {
                 RadioButton selectedBtn = (RadioButton) imageFormatGroup.getSelectedToggle();
                 try {
-                    BufferedImage imgIn = ImageIO.read(ImageProcessingController.inputImageFile);
-                    outputImageFile = new File(ImageProcessingController.inputImageFile.getParentFile() + "/" + getFileName(ImageProcessingController.inputImageFile) + "." + selectedBtn.getText().toLowerCase());
-                    ImageIO.write(imgIn, selectedBtn.getText().toLowerCase(), outputImageFile);
-                    ImageProcessingController.inputImageFile.delete();
-                    ImageProcessingController.inputImageFile = outputImageFile;
+
+                    BufferedImage imgIn = ImageIO.read(inputImageFile);
+                    outputImageFile = new File(inputImageFile.getParentFile() + "/" + getFileName(inputImageFile) + "." + getFileExtension(inputImageFile));
+                    ImageIO.write(imgIn, getFileExtension(inputImageFile), outputImageFile);
+                    outputImageFile = sendImage(outputImageFile, "change-extension", selectedBtn.getText().toLowerCase());
+                    inputImageFile.delete();
+                    inputImageFile = outputImageFile;
                     outputImageFile = null;
                     Stage primaryStage = (Stage) wrapPane.getScene().getWindow();
                     primaryStage.close();
@@ -88,7 +133,7 @@ public class ImageFormatController implements Initializable {
     }
 
     public void setDefault(){
-        setSelected(getFileExtension(ImageProcessingController.inputImageFile));
+        setSelected(getFileExtension(inputImageFile));
     }
 
     public String getFileName(File file){

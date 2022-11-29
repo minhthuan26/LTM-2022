@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.net.Socket;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -51,7 +52,11 @@ public class MainController implements Initializable {
     public static BufferedReader in = null;
     public static BufferedWriter out = null;
     private static BufferedReader stdIn = null;
-    public static String key = null;
+    public static ObjectInputStream objectIn = null;
+    public static ObjectOutputStream objectOut = null;
+    public static byte[] serverPublicKey = null;
+    public static byte[] publicKey = null;
+    public static byte[] privateKey = null;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -69,9 +74,20 @@ public class MainController implements Initializable {
                     in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                     stdIn = new BufferedReader(new InputStreamReader(System.in));
-                    key = in.readLine();
-                    System.out.println(key);
+                    objectIn = new ObjectInputStream(socket.getInputStream());
+                    objectOut = new ObjectOutputStream(socket.getOutputStream());
+                    //read public key from server
+                    serverPublicKey = (byte[]) objectIn.readObject();
+
+                    //create client key
+                    ArrayList<byte[]> keyList = Cryption.RSA.KeyPairGenerate();
+                    publicKey = keyList.get(0);
+                    privateKey = keyList.get(1);
+
+                    objectOut.writeObject(publicKey);
+                    objectOut.flush();
                 } catch (Exception error) {
+                    error.printStackTrace();
                     closeConnect();
                 }
             }

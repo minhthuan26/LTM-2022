@@ -77,7 +77,7 @@
                         <Button fx:id="changeExtensionBtn" mnemonicParsing="false" text="Đổi định dạng" />
                         <Button fx:id="greyScaleBtn" mnemonicParsing="false" text="Greyscale" />
                         <Button fx:id="findWithGoogleBtn" mnemonicParsing="false" text="Tìm kiếm trên Google" />
-                        <Button fx:id="objectDetectBtn" mnemonicParsing="false" text="Nhận diện khuôn mặt" />
+                        <Button fx:id="objectDetectBtn" mnemonicParsing="false" text="Nhận diện vật thể" />
                      </children>
                   </HBox>
                </children>

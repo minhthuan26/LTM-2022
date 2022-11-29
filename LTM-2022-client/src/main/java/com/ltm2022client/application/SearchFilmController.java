@@ -13,7 +13,7 @@ import javafx.scene.control.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -21,6 +21,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import javax.crypto.SealedObject;
+
+import static com.ltm2022client.application.MainController.objectIn;
 
 public class SearchFilmController implements Initializable {
     private static final ObservableList<Film> searchList = FXCollections.observableArrayList();
@@ -72,36 +76,66 @@ public class SearchFilmController implements Initializable {
                         if (reviewFilmList.size() != 0){
                             reviewFilmList.clear();
                         }
+                        String key = Cryption.RandomKey() + ";;1";
+                        SealedObject encryptedValue = (SealedObject) Cryption.AES.EncryptionObject(rawValue, key);
+                        key = Cryption.RSA.Encryption(key, MainController.serverPublicKey);
+                        MainController.objectOut.writeObject(encryptedValue);
+                        MainController.objectOut.writeObject(key);
+                        MainController.objectOut.flush();
 
-                        String seachValue = Vigenere.Decode(rawValue, MainController.key);
-                        MainController.out.write(seachValue);
-                        MainController.out.newLine();
-                        MainController.out.flush();
-                        String line = Vigenere.Encode(MainController.in.readLine(), MainController.key);
-                        JSONObject json = new JSONObject(line);
-                        Film film = new Film();
-                        film.setActor(json.getString("actors"));
-                        film.setPoster(json.getString("filmPoster"));
-                        film.setImdb(json.getString("imdb"));
-                        film.setDescription(json.getString("filmDescription"));
-                        film.setTrailer(json.getString("filmTrailer"));
-                        film.setDirector(json.getString("filmDirector"));
-                        film.setName(json.getString("filmName"));
-                        film.setYear(json.getString("filmYear"));
-                        film.setGern(json.getString("filmGern"));
-                        JSONArray reviewList = json.getJSONArray("reviewList");
+                        Object responseFromServer;
+                        SealedObject message = null;
+                        String content;
+                        while((responseFromServer = (Object) objectIn.readObject()) != null){
 
-                        for (Object review : reviewList){
-                            Review rv = new Review();
-                            JSONObject reviewToJson = new JSONObject(review.toString());
-                            rv.setTitle(reviewToJson.getString("title"));
-                            rv.setContent(reviewToJson.getString("content"));
-                            rv.setUserName(reviewToJson.getString("username"));
-                            reviewFilmList.add(rv);
+                            if(responseFromServer.getClass().getName().equalsIgnoreCase("javax.crypto.SealedObject")){
+                                message = (SealedObject) responseFromServer;
+                            }
+                            else{
+                                String checkValue = (String) responseFromServer;
+                                if(!checkValue.equalsIgnoreCase("done"))
+                                    key = (String) responseFromServer;
+                                else{
+                                    break;
+                                }
+                            }
                         }
-                        searchList.add(film);
+                        if(message != null && key != null){
+                            key = Cryption.RSA.Decryption(key, MainController.privateKey);
+                            String[] keyPart = key.split(";;");
+                            if(keyPart[1].equalsIgnoreCase("1")){
+                                content = (String) Cryption.AES.DecryptionObject(message, key);
+                                String resultValues = content;
+                                String[] tmp = resultValues.split(";;");
+                                if(tmp.length != 1){
+                                    Film film = new Film();
+                                    film.setName(tmp[0]);
+                                    film.setYear(tmp[1]);
+                                    film.setActor(tmp[2]);
+                                    film.setImdb(tmp[3]);
+                                    film.setPoster(tmp[4]);
+                                    film.setTrailer(tmp[5]);
+                                    film.setGern(tmp[6]);
+                                    film.setDescription(tmp[7]);
+                                    film.setDirector(tmp[8]);
+                                    JSONArray reviewList = new JSONArray(tmp[9]);
 
-                        loadFilmFromSearchList();
+                                    for (Object review : reviewList) {
+                                        Review rv = new Review();
+                                        JSONObject reviewToJson = new JSONObject(review.toString());
+                                        rv.setTitle(reviewToJson.getString("title"));
+                                        rv.setContent(reviewToJson.getString("content"));
+                                        rv.setUserName(reviewToJson.getString("username"));
+                                        reviewFilmList.add(rv);
+                                    }
+                                    searchList.add(film);
+                                    loadFilmFromSearchList();
+                                }
+                                else{
+                                    errorAlert("Thông báo", tmp[0]);
+                                }
+                            }
+                        }
                     } catch (Exception error) {
                         error.printStackTrace();
                     }
